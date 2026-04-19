@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f13;
+  --surface:#17171d;
+  --surface2:#1e1e26;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --text:#e8e8f0;
+  --text2:#9090a8;
+  --text3:#5a5a72;
+  --purple:#a78bfa;
+  --purple-d:#7c5cbf;
+  --blue:#60a5fa;
+  --blue-d:#2563c8;
+  --green:#4ade80;
+  --green-d:#16a34a;
+  --coral:#fb7185;
+  --coral-d:#be2d45;
+  --amber:#fbbf24;
+  --amber-d:#b45309;
+  --teal:#2dd4bf;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-weight:400;min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(15,15,19,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:0;height:54px}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--text);margin-right:2rem;white-space:nowrap}
+.nav-logo span{color:var(--purple)}
+.nav-links{display:flex;gap:2px;overflow-x:auto;flex:1}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;white-space:nowrap;border:none;background:none;transition:all .15s}
+.nav-link:hover{color:var(--text);background:rgba(255,255,255,0.05)}
+.nav-link.active{color:var(--purple);background:rgba(167,139,250,0.1)}
+
+/* HERO */
+.hero{padding:5rem 2rem 3rem;max-width:760px;margin:0 auto;text-align:center}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(2.4rem,6vw,3.8rem);line-height:1.1;margin-bottom:1rem;letter-spacing:-0.02em}
+.hero h1 em{font-style:italic;color:var(--purple)}
+.hero p{color:var(--text2);font-size:1.05rem;line-height:1.7;max-width:520px;margin:0 auto 2rem}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pill{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid var(--border2);color:var(--text2)}
+
+/* SECTIONS */
+.section{padding:2rem;max-width:860px;margin:0 auto 3rem;scroll-margin-top:70px}
+.section-header{display:flex;align-items:baseline;gap:12px;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.section-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--text3);font-weight:500}
+.section-title{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text)}
+.section-tag{margin-left:auto;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px}
+.tag-algebra{background:rgba(167,139,250,0.12);color:var(--purple)}
+.tag-geometry{background:rgba(74,222,128,0.1);color:var(--green)}
+.tag-trig{background:rgba(96,165,250,0.1);color:var(--blue)}
+.tag-calculus{background:rgba(251,191,36,0.1);color:var(--amber)}
+.tag-circle{background:rgba(45,212,191,0.1);color:var(--teal)}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem}
+.card-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:1.2rem}
+
+/* FORMULA DISPLAY */
+.formula-display{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:500;text-align:center;padding:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;margin-bottom:1.2rem;color:var(--text)}
+
+/* CONTROLS */
+.slider-group{margin-bottom:14px}
+.slider-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.slider-label{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;min-width:18px}
+.slider-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;min-width:52px;text-align:right;color:var(--text)}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--surface2);outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--purple);cursor:pointer;border:2px solid var(--bg)}
+input[type=number]{width:68px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:5px 8px;text-align:center;outline:none}
+input[type=number]:focus{border-color:var(--purple)}
+
+/* INFO CARDS */
+.info-grid{display:grid;gap:8px;margin-top:12px}
+.info-grid-2{grid-template-columns:1fr 1fr}
+.info-grid-3{grid-template-columns:1fr 1fr 1fr}
+.info-grid-4{grid-template-columns:repeat(4,1fr)}
+.ic{background:var(--surface2);border-radius:10px;padding:10px 12px;border:1px solid var(--border)}
+.ic .lbl{font-size:10px;font-weight:500;color:var(--text3);margin-bottom:3px}
+.ic .val{font-size:14px;font-weight:500;color:var(--text);font-family:'DM Mono',monospace}
+.ic.purple .lbl{color:var(--purple)}.ic.purple .val{color:var(--purple)}
+.ic.blue .lbl{color:var(--blue)}.ic.blue .val{color:var(--blue)}
+.ic.green .lbl{color:var(--green)}.ic.green .val{color:var(--green)}
+.ic.coral .lbl{color:var(--coral)}.ic.coral .val{color:var(--coral)}
+.ic.amber .lbl{color:var(--amber)}.ic.amber .val{color:var(--amber)}
+.ic.teal .lbl{color:var(--teal)}.ic.teal .val{color:var(--teal)}
+
+/* CANVAS */
+canvas{display:block;width:100%;border-radius:12px;border:1px solid var(--border);touch-action:none}
+.hint{text-align:center;font-size:11px;color:var(--text3);margin-top:8px}
+
+/* TOGGLE */
+.toggle-row{display:flex;gap:6px;margin-bottom:12px}
+.tog{flex:1;padding:7px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s}
+.tog:hover{border-color:var(--border2);color:var(--text)}
+.tog.on-sine{background:rgba(96,165,250,0.12);border-color:rgba(96,165,250,0.3);color:var(--blue)}
+.tog.on-cosine{background:rgba(74,222,128,0.1);border-color:rgba(74,222,128,0.3);color:var(--green)}
+.tog.on{background:rgba(167,139,250,0.12);border-color:rgba(167,139,250,0.3);color:var(--purple)}
+
+/* THEOREM TABS */
+.thm-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px}
+.thm-tab{padding:7px 4px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text3);font-size:11px;font-weight:500;cursor:pointer;text-align:center;line-height:1.3;transition:all .15s}
+.thm-tab.on{background:rgba(45,212,191,0.1);border-color:rgba(45,212,191,0.3);color:var(--teal)}
+.thm-box{background:rgba(45,212,191,0.07);border:1px solid rgba(45,212,191,0.2);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:500;color:var(--teal);text-align:center;margin-bottom:12px;line-height:1.5}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;color:var(--text3);font-size:12px;margin-top:3rem}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Math<span>&#8734;</span>Explorer</div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="scrollTo2('quadratic')">Quadratic</button>
+    <button class="nav-link" onclick="scrollTo2('pythagorean')">Pythagorean</button>
+    <button class="nav-link" onclick="scrollTo2('unitcircle')">Unit Circle</button>
+    <button class="nav-link" onclick="scrollTo2('sinecos')">Sine &amp; Cosine Rule</button>
+    <button class="nav-link" onclick="scrollTo2('circles')">Circle Theorems</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Interactive<br><em>Math Explorer</em></h1>
+  <p>Drag, slide and explore the most important equations and theorems in high school mathematics — all brought to life.</p>
+  <div class="pill-row">
+    <div class="pill">Algebra</div>
+    <div class="pill">Geometry</div>
+    <div class="pill">Trigonometry</div>
+    <div class="pill">Circle Theorems</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ QUADRATIC -->
+<div class="section" id="quadratic">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">Quadratic Equation</span>
+    <span class="section-tag tag-algebra">Algebra</span>
+  </div>
+  <div class="card">
+    <div class="card-desc">Explore how the coefficients a, b and c shape the parabola. Watch the roots, vertex and y-intercept update in real time.</div>
+    <div class="formula-display" id="q-formula">f(x) = x²</div>
+    <div class="slider-group">
+      <div class="slider-row">
+        <span class="slider-label" style="color:var(--blue)">a</span>
+        <input type="range" min="-15" max="15" step="0.1" value="1" id="q-sl-a" oninput="qSync('a',this)">
+        <input type="number" min="-15" max="15" step="0.1" value="1" id="q-num-a" oninput="qSync('a',this)" onchange="qClamp('a')">
+      </div>
+      <div class="slider-row">
+        <span class="slider-label" style="color:var(--green)">b</span>
+        <input type="range" min="-15" max="15" step="0.1" value="0" id="q-sl-b" oninput="qSync('b',this)">
+        <input type="number" min="-15" max="15" step="0.1" value="0" id="q-num-b" oninput="qSync('b',this)" onchange="qClamp('b')">
+      </div>
+      <div class="slider-row">
+        <span class="slider-label" style="color:var(--coral)">c</span>
+        <input type="range" min="-15" max="15" step="0.1" value="0" id="q-sl-c" oninput="qSync('c',this)">
+        <input type="number" min="-15" max="15" step="0.1" value="0" id="q-num-c" oninput="qSync('c',this)" onchange="qClamp('c')">
+      </div>
+    </div>
+    <canvas id="q-cv" height="300"></canvas>
+    <div class="info-grid info-grid-4" style="margin-top:10px">
+      <div class="ic blue"><div class="lbl">Discriminant</div><div class="val" id="q-disc">—</div></div>
+      <div class="ic green"><div class="lbl">Roots</div><div class="val" id="q-roots">—</div></div>
+      <div class="ic coral"><div class="lbl">Vertex</div><div class="val" id="q-vertex">—</div></div>
+      <div class="ic purple"><div class="lbl">Y-intercept</div><div class="val" id="q-yint">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ PYTHAGOREAN -->
+<div class="section" id="pythagorean">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">Pythagorean Theorem</span>
+    <span class="section-tag tag-geometry">Geometry</span>
+  </div>
+  <div class="card">
+    <div class="card-desc">Drag any corner of the triangle. The colored squares show the areas a², b² and c² — you can literally see them add up.</div>
+    <div class="formula-display" id="py-formula">3.0² + 4.0² = 5.0²</div>
+    <canvas id="py-cv"></canvas>
+    <div class="info-grid info-grid-3" style="margin-top:10px">
+      <div class="ic blue"><div class="lbl">Side a</div><div class="val" id="py-a">—</div></div>
+      <div class="ic green"><div class="lbl">Side b</div><div class="val" id="py-b">—</div></div>
+      <div class="ic coral"><div class="lbl">Hypotenuse c</div><div class="val" id="py-c">—</div></div>
+    </div>
+    <div class="hint">Drag any vertex · right-angle corner moves the whole triangle</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ UNIT CIRCLE -->
+<div class="section" id="unitcircle">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">Unit Circle</span>
+    <span class="section-tag tag-trig">Trigonometry</span>
+  </div>
+  <div class="card">
+    <div class="card-desc">Drag the dot around the unit circle to see how sin, cos and tan change. The wave graph below traces the functions as you go.</div>
+    <div class="info-grid info-grid-4" style="margin-bottom:12px">
+      <div class="ic purple"><div class="lbl">Angle θ</div><div class="val" id="uc-ang">45.0°</div></div>
+      <div class="ic blue"><div class="lbl">cos θ</div><div class="val" id="uc-cos">0.707</div></div>
+      <div class="ic green"><div class="lbl">sin θ</div><div class="val" id="uc-sin">0.707</div></div>
+      <div class="ic coral"><div class="lbl">tan θ</div><div class="val" id="uc-tan">1.000</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12px;color:var(--text2)">
+      <span>0°</span>
+      <input type="range" min="0" max="360" step="0.5" value="45" id="uc-slider" style="flex:1" oninput="ucFromSlider(this.value)">
+      <span>360°</span>
+    </div>
+    <canvas id="uc-cv"></canvas>
+    <canvas id="uc-wave" height="90" style="margin-top:10px"></canvas>
+    <div class="hint">Drag the purple dot or use the slider</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ SINE COSINE RULE -->
+<div class="section" id="sinecos">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">Sine &amp; Cosine Rule</span>
+    <span class="section-tag tag-trig">Trigonometry</span>
+  </div>
+  <div class="card">
+    <div class="card-desc">Drag any vertex to reshape the triangle. Toggle between the sine rule and cosine rule to see the live formula verification.</div>
+    <div class="toggle-row">
+      <div class="tog on-sine" id="sc-sine" onclick="scMode('sine')">Sine rule &nbsp; a/sin A = b/sin B = c/sin C</div>
+      <div class="tog" id="sc-cos" onclick="scMode('cosine')">Cosine rule &nbsp; a² = b²+c²−2bc·cos(A)</div>
+    </div>
+    <div class="formula-display" id="sc-formula">a / sin(A) = b / sin(B) = c / sin(C)</div>
+    <canvas id="sc-cv"></canvas>
+    <div class="info-grid info-grid-3" style="margin-top:10px">
+      <div class="ic blue"><div class="lbl">Angle A / Side a</div><div class="val" id="sc-A">—</div></div>
+      <div class="ic green"><div class="lbl">Angle B / Side b</div><div class="val" id="sc-B">—</div></div>
+      <div class="ic coral"><div class="lbl">Angle C / Side c</div><div class="val" id="sc-C">—</div></div>
+    </div>
+    <div class="ic" style="margin-top:8px;text-align:center">
+      <div class="lbl">Verification</div>
+      <div class="val" id="sc-verify" style="font-size:12px">—</div>
+    </div>
+    <div class="hint">Drag any vertex to reshape the triangle</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ CIRCLE THEOREMS -->
+<div class="section" id="circles">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">Circle Theorems</span>
+    <span class="section-tag tag-circle">Geometry</span>
+  </div>
+  <div class="card">
+    <div class="card-desc">Six key circle theorems — drag the points on the circle to verify each one holds for any configuration.</div>
+    <div class="thm-tabs">
+      <div class="thm-tab on" onclick="ctSet(0)">Angle at centre</div>
+      <div class="thm-tab" onclick="ctSet(1)">Same segment</div>
+      <div class="thm-tab" onclick="ctSet(2)">Semicircle</div>
+      <div class="thm-tab" onclick="ctSet(3)">Cyclic quad</div>
+      <div class="thm-tab" onclick="ctSet(4)">Tangent-radius</div>
+      <div class="thm-tab" onclick="ctSet(5)">Tangent lengths</div>
+    </div>
+    <div class="thm-box" id="ct-box">The angle at the centre is twice the angle at the circumference</div>
+    <canvas id="ct-cv"></canvas>
+    <div class="info-grid info-grid-2" style="margin-top:10px">
+      <div class="ic teal"><div class="lbl" id="ct-lbl0">—</div><div class="val" id="ct-val0">—</div></div>
+      <div class="ic purple"><div class="lbl" id="ct-lbl1">—</div><div class="val" id="ct-val1">—</div></div>
+    </div>
+    <div class="hint" id="ct-hint">Drag the points on the circle to explore</div>
+  </div>
+</div>
+
+<footer>Math&#8734;Explorer &middot; Built interactively &middot; All theorems hold for any configuration you drag</footer>
+
+<script>
+// ─── UTILITIES ───────────────────────────────────────────────
+const dpr = window.devicePixelRatio || 1;
+function scrollTo2(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
+function angleBetween(v, p1, p2) {
+  const ax = p1.x - v.x, ay = p1.y - v.y, bx = p2.x - v.x, by = p2.y - v.y;
+  const d = Math.hypot(ax, ay) * Math.hypot(bx, by);
+  return d < .001 ? 0 : Math.acos(Math.max(-1, Math.min(1, (ax * bx + ay * by) / d)));
+}
+function deg(r) { return (r * 180 / Math.PI).toFixed(1) + '°'; }
+function ptOnCircle(cx, cy, cr, a) { return { x: cx + Math.cos(a) * cr, y: cy + Math.sin(a) * cr }; }
+function setupCanvas(cv, h) {
+  const w = cv.parentElement.offsetWidth - 48;
+  const height = h || Math.round(w * 0.68);
+  cv.width = w * dpr; cv.height = height * dpr;
+  cv.style.width = w + 'px'; cv.style.height = height + 'px';
+  return { w, h: height };
+}
+function drawDot(ctx, x, y, col, r) {
+  r = r || 7;
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+  ctx.fillStyle = col; ctx.fill();
+  ctx.strokeStyle = '#0f0f13'; ctx.lineWidth = 2; ctx.stroke();
+}
+function drawLine(ctx, p1, p2, col, w, dash) {
+  w = w || 1.5; dash = dash || [];
+  ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+  ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
+}
+function drawLabel(ctx, txt, x, y, col, size, align) {
+  size = size || 12; align = align || 'center';
+  ctx.fillStyle = col; ctx.font = 'bold ' + size + 'px \'DM Mono\',monospace';
+  ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(txt, x, y);
+}
+
+// nav active
+window.addEventListener('scroll', () => {
+  const secs = ['quadratic', 'pythagorean', 'unitcircle', 'sinecos', 'circles'];
+  const links = document.querySelectorAll('.nav-link');
+  let active = 0;
+  secs.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 100) active = i;
+  });
+  links.forEach((l, i) => l.classList.toggle('active', i === active));
+});
+
+// ─── QUADRATIC ───────────────────────────────────────────────
+const qcv = document.getElementById('q-cv');
+const qctx = qcv.getContext('2d');
+let qCurA = 1, qCurB = 0, qCurC = 0, qTgtA = 1, qTgtB = 0, qTgtC = 0, qAnim = null;
+let qW = 0, qH = 0;
+
+function qClamp(l) {
+  const n = document.getElementById('q-num-' + l);
+  let v = parseFloat(n.value); if (isNaN(v)) v = 0;
+  v = Math.min(15, Math.max(-15, parseFloat(v.toFixed(1))));
+  n.value = v; qSync(l, n);
+}
+function qSync(l, src) {
+  let v = parseFloat(src.value); if (isNaN(v)) return;
+  v = Math.min(15, Math.max(-15, parseFloat(v.toFixed(1))));
+  document.getElementById('q-sl-' + l).value = v;
+  document.getElementById('q-num-' + l).value = v;
+  if (l === 'a') qTgtA = v; if (l === 'b') qTgtB = v; if (l === 'c') qTgtC = v;
+  qUpdateInfo(qTgtA, qTgtB, qTgtC);
+  if (!qAnim) qAnim = requestAnimationFrame(qAnimate);
+}
+function qAnimate() {
+  qCurA += (qTgtA - qCurA) * 0.18; qCurB += (qTgtB - qCurB) * 0.18; qCurC += (qTgtC - qCurC) * 0.18;
+  qDraw(qCurA, qCurB, qCurC);
+  if (Math.abs(qCurA - qTgtA) > .0005 || Math.abs(qCurB - qTgtB) > .0005 || Math.abs(qCurC - qTgtC) > .0005) {
+    qAnim = requestAnimationFrame(qAnimate);
+  } else {
+    qCurA = qTgtA; qCurB = qTgtB; qCurC = qTgtC; qDraw(qCurA, qCurB, qCurC); qAnim = null;
+  }
+}
+function qDraw(a, b, c) {
+  qctx.clearRect(0, 0, qcv.width, qcv.height);
+  qctx.save(); qctx.scale(dpr, dpr);
+  const W = qW, H = qH, xMin = -12, xMax = 12, yMin = -14, yMax = 14;
+  function toP(x, y) { return [(x - xMin) / (xMax - xMin) * W, H - (y - yMin) / (yMax - yMin) * H]; }
+  qctx.strokeStyle = 'rgba(255,255,255,0.04)'; qctx.lineWidth = 0.5;
+  for (let i = xMin; i <= xMax; i++) {
+    const [px] = toP(i, 0); qctx.beginPath(); qctx.moveTo(px, 0); qctx.lineTo(px, H); qctx.stroke();
+  }
+  for (let i = yMin; i <= yMax; i++) {
+    const [, py] = toP(0, i); qctx.beginPath(); qctx.moveTo(0, py); qctx.lineTo(W, py); qctx.stroke();
+  }
+  qctx.strokeStyle = 'rgba(255,255,255,0.15)'; qctx.lineWidth = 1;
+  const [ax0, ay] = toP(xMin, 0), [ax1] = toP(xMax, 0);
+  qctx.beginPath(); qctx.moveTo(ax0, ay); qctx.lineTo(ax1, ay); qctx.stroke();
+  const [ox, oy0] = toP(0, yMin), [, oy1] = toP(0, yMax);
+  qctx.beginPath(); qctx.moveTo(ox, oy0); qctx.lineTo(ox, oy1); qctx.stroke();
+  qctx.fillStyle = 'rgba(255,255,255,0.2)'; qctx.font = '10px sans-serif'; qctx.textAlign = 'center';
+  for (let i = xMin + 2; i <= xMax; i += 2) {
+    if (!i) continue; const [px, py] = toP(i, 0); qctx.fillText(i, px, py + 13);
+  }
+  qctx.textAlign = 'right';
+  for (let i = yMin + 2; i <= yMax; i += 2) {
+    if (!i) continue; const [px, py] = toP(0, i); qctx.fillText(i, px - 4, py + 3);
+  }
+  const lin = Math.abs(a) < 0.001;
+  qctx.beginPath(); qctx.strokeStyle = '#a78bfa'; qctx.lineWidth = 2.5; qctx.lineJoin = 'round';
+  let started = false; const steps = W * 2;
+  for (let px = 0; px <= steps; px++) {
+    const x = xMin + (px / steps) * (xMax - xMin);
+    const y = lin ? b * x + c : a * x * x + b * x + c;
+    if (y < yMin - 30 || y > yMax + 30) { started = false; continue; }
+    const [sx, sy] = toP(x, y);
+    if (!started) { qctx.moveTo(sx, sy); started = true; } else qctx.lineTo(sx, sy);
+  }
+  qctx.stroke();
+  if (!lin) {
+    const disc = b * b - 4 * a * c;
+    if (disc >= 0) {
+      const sq = Math.sqrt(Math.max(0, disc));
+      const roots = disc < .001 ? [(-b) / (2 * a)] : [(-b + sq) / (2 * a), (-b - sq) / (2 * a)];
+      roots.forEach(rx => {
+        if (rx < xMin - .5 || rx > xMax + .5) return;
+        const [px, py] = toP(rx, 0);
+        qctx.beginPath(); qctx.arc(px, py, 5, 0, Math.PI * 2);
+        qctx.fillStyle = '#fb7185'; qctx.fill();
+        qctx.strokeStyle = '#0f0f13'; qctx.lineWidth = 1.5; qctx.stroke();
+      });
+    }
+    const vx = -b / (2 * a), vy = a * vx * vx + b * vx + c;
+    if (vx >= xMin && vx <= xMax && vy >= yMin && vy <= yMax) {
+      const [px, py] = toP(vx, vy);
+      qctx.beginPath(); qctx.arc(px, py, 5, 0, Math.PI * 2);
+      qctx.fillStyle = '#4ade80'; qctx.fill();
+      qctx.strokeStyle = '#0f0f13'; qctx.lineWidth = 1.5; qctx.stroke();
+    }
+  }
+  if (c >= yMin && c <= yMax) {
+    const [px, py] = toP(0, c);
+    qctx.beginPath(); qctx.arc(px, py, 6, 0, Math.PI * 2);
+    qctx.fillStyle = '#c084fc'; qctx.fill();
+    qctx.strokeStyle = '#0f0f13'; qctx.lineWidth = 1.5; qctx.stroke();
+    qctx.fillStyle = '#c084fc'; qctx.font = 'bold 10px sans-serif';
+    qctx.textAlign = 'left'; qctx.textBaseline = 'middle';
+    qctx.fillText('y=' + parseFloat(c.toFixed(2)), px + 9, py - 7);
+  }
+  qctx.restore();
+}
+function qUpdateInfo(a, b, c) {
+  const lin = Math.abs(a) < .001;
+  let f = 'f(x) = ';
+  if (lin) {
+    if (Math.abs(b) < .001 && Math.abs(c) < .001) f += '0';
+    else {
+      if (Math.abs(b) > .001) f += (b === 1 ? '' : (b === -1 ? '−' : b.toFixed(1))) + 'x';
+      if (Math.abs(c) > .001) f += (Math.abs(b) > .001 ? (c < 0 ? ' − ' : ' + ') : '') + (Math.abs(c)).toFixed(1);
+    }
+  } else {
+    f += (a === 1 ? '' : (a === -1 ? '−' : a.toFixed(1))) + 'x²';
+    if (Math.abs(b) > .001) f += ` ${b < 0 ? '−' : '+'} ${Math.abs(b) === 1 ? '' : Math.abs(b).toFixed(1)}x`;
+    if (Math.abs(c) > .001) f += ` ${c < 0 ? '−' : '+'} ${Math.abs(c).toFixed(1)}`;
+  }
+  document.getElementById('q-formula').textContent = f;
+  const disc = b * b - 4 * a * c;
+  document.getElementById('q-disc').textContent = disc.toFixed(2);
+  if (lin) {
+    document.getElementById('q-roots').textContent = Math.abs(b) < .001 ? 'All x' : 'x=' + (-c / b).toFixed(2);
+    document.getElementById('q-vertex').textContent = '—';
+  } else if (disc > 0.001) {
+    const sq = Math.sqrt(disc);
+    document.getElementById('q-roots').textContent = ((-b + sq) / (2 * a)).toFixed(2) + ', ' + ((-b - sq) / (2 * a)).toFixed(2);
+    const vx = -b / (2 * a);
+    document.getElementById('q-vertex').textContent = '(' + vx.toFixed(2) + ', ' + (a * vx * vx + b * vx + c).toFixed(2) + ')';
+  } else if (disc >= -0.001) {
+    const r = -b / (2 * a);
+    document.getElementById('q-roots').textContent = 'x=' + r.toFixed(2);
+    document.getElementById('q-vertex').textContent = '(' + r.toFixed(2) + ', ' + (a * r * r + b * r + c).toFixed(2) + ')';
+  } else {
+    document.getElementById('q-roots').textContent = 'No real roots';
+    const vx = -b / (2 * a);
+    document.getElementById('q-vertex').textContent = '(' + vx.toFixed(2) + ', ' + (a * vx * vx + b * vx + c).toFixed(2) + ')';
+  }
+  document.getElementById('q-yint').textContent = '(0, ' + c.toFixed(2) + ')';
+}
+function qResize() {
+  const sz = setupCanvas(qcv, 320); qW = sz.w; qH = sz.h;
+  qDraw(qCurA, qCurB, qCurC); qUpdateInfo(qTgtA, qTgtB, qTgtC);
+}
+
+// ─── PYTHAGOREAN ─────────────────────────────────────────────
+const pycv = document.getElementById('py-cv');
+const pyctx = pycv.getContext('2d');
+let pyW = 0, pyH = 0, pyDrag = null;
+let pyVerts = { R: { x: 0, y: 0 }, A: { x: 0, y: 0 }, B: { x: 0, y: 0 } };
+
+function pyInit() {
+  const u = Math.min(pyW, pyH) / 11;
+  const cx = pyW / 2 - u * .5, cy = pyH / 2 + u * .5;
+  pyVerts = { R: { x: cx, y: cy }, A: { x: cx + u * 3, y: cy }, B: { x: cx, y: cy - u * 4 } };
+}
+function pyDrawSquare(p1, p2, fill, stroke) {
+  const dx = p2.x - p1.x, dy = p2.y - p1.y, px = -dy, py2 = dx;
+  pyctx.beginPath(); pyctx.moveTo(p1.x, p1.y); pyctx.lineTo(p2.x, p2.y);
+  pyctx.lineTo(p2.x + px, p2.y + py2); pyctx.lineTo(p1.x + px, p1.y + py2); pyctx.closePath();
+  pyctx.fillStyle = fill; pyctx.fill(); pyctx.strokeStyle = stroke; pyctx.lineWidth = 1.5; pyctx.stroke();
+}
+function pySqMid(p1, p2) {
+  const dx = p2.x - p1.x, dy = p2.y - p1.y, px = -dy * .5, py2 = dx * .5;
+  return { x: (p1.x + p2.x) / 2 + px, y: (p1.y + p2.y) / 2 + py2 };
+}
+function pyDraw() {
+  pyctx.clearRect(0, 0, pycv.width, pycv.height);
+  pyctx.save(); pyctx.scale(dpr, dpr);
+  const { R, A, B } = pyVerts;
+  const sA = dist(R, A), sB = dist(R, B), sC = dist(A, B), sc = 120;
+  pyDrawSquare(R, A, 'rgba(96,165,250,0.12)', '#60a5fa');
+  pyDrawSquare(B, R, 'rgba(74,222,128,0.1)', '#4ade80');
+  pyDrawSquare(A, B, 'rgba(251,113,133,0.12)', '#fb7185');
+  const aM = pySqMid(R, A), bM = pySqMid(B, R), cM = pySqMid(A, B);
+  function sqLbl(m, txt, col, sz) {
+    pyctx.fillStyle = col; pyctx.font = 'bold ' + sz + 'px \'DM Mono\',monospace';
+    pyctx.textAlign = 'center'; pyctx.textBaseline = 'middle'; pyctx.fillText(txt, m.x, m.y);
+  }
+  const fA = Math.max(10, Math.min(14, sA * .18)), fB = Math.max(10, Math.min(14, sB * .18)), fC = Math.max(10, Math.min(13, sC * .14));
+  sqLbl(aM, 'a²=' + (sA / sc * sA / sc).toFixed(1), '#60a5fa', fA);
+  sqLbl(bM, 'b²=' + (sB / sc * sB / sc).toFixed(1), '#4ade80', fB);
+  sqLbl(cM, 'c²=' + (sC / sc * sC / sc).toFixed(1), '#fb7185', fC);
+  pyctx.beginPath(); pyctx.moveTo(R.x, R.y); pyctx.lineTo(A.x, A.y); pyctx.lineTo(B.x, B.y); pyctx.closePath();
+  pyctx.fillStyle = 'rgba(167,139,250,0.06)'; pyctx.fill();
+  pyctx.strokeStyle = 'rgba(255,255,255,0.5)'; pyctx.lineWidth = 2; pyctx.stroke();
+  const sq = Math.min(sA, sB) * .15;
+  const uA = { x: (A.x - R.x) / sA, y: (A.y - R.y) / sA }, uB = { x: (B.x - R.x) / sB, y: (B.y - R.y) / sB };
+  pyctx.beginPath();
+  pyctx.moveTo(R.x + uA.x * sq, R.y + uA.y * sq);
+  pyctx.lineTo(R.x + uA.x * sq + uB.x * sq, R.y + uA.y * sq + uB.y * sq);
+  pyctx.lineTo(R.x + uB.x * sq, R.y + uB.y * sq);
+  pyctx.strokeStyle = 'rgba(167,139,250,0.6)'; pyctx.lineWidth = 1.2; pyctx.stroke();
+  function sideLabel(p1, p2, lbl, col) {
+    const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2, dx = p2.x - p1.x, dy = p2.y - p1.y, l = Math.hypot(dx, dy);
+    const nx = -dy / l, ny = dx / l;
+    const cx2 = (R.x + A.x + B.x) / 3, cy2 = (R.y + A.y + B.y) / 3;
+    const s = ((mx + nx * 16 - cx2) * nx + (my + ny * 16 - cy2) * ny) > 0 ? 1 : -1;
+    pyctx.fillStyle = col; pyctx.font = 'bold 13px sans-serif';
+    pyctx.textAlign = 'center'; pyctx.textBaseline = 'middle';
+    pyctx.fillText(lbl, mx + nx * 16 * s, my + ny * 16 * s);
+  }
+  sideLabel(R, A, 'a', '#60a5fa'); sideLabel(B, R, 'b', '#4ade80'); sideLabel(A, B, 'c', '#fb7185');
+  [R, A, B].forEach((p, i) => { drawDot(pyctx, p.x, p.y, ['#a78bfa', '#60a5fa', '#4ade80'][i === 0 ? 0 : i === 1 ? 0 : 1]); });
+  const sa = (sA / sc).toFixed(1), sb = (sB / sc).toFixed(1), sc2 = (sC / sc).toFixed(1);
+  document.getElementById('py-a').textContent = sa;
+  document.getElementById('py-b').textContent = sb;
+  document.getElementById('py-c').textContent = sc2;
+  document.getElementById('py-formula').textContent = sa + '² + ' + sb + '² = ' + sc2 + '²   →   ' + (sa * sa).toFixed(1) + ' + ' + (sb * sb).toFixed(1) + ' = ' + (sc2 * sc2).toFixed(1);
+  pyctx.restore();
+}
+function pyPt(e) {
+  const r = pycv.getBoundingClientRect(), cl = e.touches ? e.touches[0] : e;
+  return { x: (cl.clientX - r.left) * (pyW / r.width), y: (cl.clientY - r.top) * (pyH / r.height) };
+}
+function pyHit(p) { for (const k of ['R', 'A', 'B']) if (dist(p, pyVerts[k]) < 20) return k; return null; }
+pycv.addEventListener('mousedown', e => { e.preventDefault(); pyDrag = pyHit(pyPt(e)); if (pyDrag) pycv.style.cursor = 'grabbing'; });
+pycv.addEventListener('mousemove', e => {
+  e.preventDefault(); const p = pyPt(e);
+  if (!pyDrag) { pycv.style.cursor = pyHit(p) ? 'grab' : 'default'; return; }
+  const pad = 25;
+  p.x = Math.max(pad, Math.min(pyW - pad, p.x)); p.y = Math.max(pad, Math.min(pyH - pad, p.y));
+  if (pyDrag === 'R') {
+    const dax = pyVerts.A.x - pyVerts.R.x, day = pyVerts.A.y - pyVerts.R.y;
+    const dbx = pyVerts.B.x - pyVerts.R.x, dby = pyVerts.B.y - pyVerts.R.y;
+    pyVerts.R = p;
+    pyVerts.A = { x: Math.max(pad, Math.min(pyW - pad, p.x + dax)), y: Math.max(pad, Math.min(pyH - pad, p.y + day)) };
+    pyVerts.B = { x: Math.max(pad, Math.min(pyW - pad, p.x + dbx)), y: Math.max(pad, Math.min(pyH - pad, p.y + dby)) };
+  } else if (pyDrag === 'A') pyVerts.A = { x: p.x, y: pyVerts.R.y };
+  else pyVerts.B = { x: pyVerts.R.x, y: p.y };
+  pyDraw();
+});
+pycv.addEventListener('mouseup', () => { pyDrag = null; pycv.style.cursor = 'default'; });
+pycv.addEventListener('mouseleave', () => { pyDrag = null; });
+pycv.addEventListener('touchstart', e => { e.preventDefault(); pyDrag = pyHit(pyPt(e)); }, { passive: false });
+pycv.addEventListener('touchmove', e => {
+  e.preventDefault(); if (!pyDrag) return;
+  const p = pyPt(e); const pad = 25;
+  p.x = Math.max(pad, Math.min(pyW - pad, p.x)); p.y = Math.max(pad, Math.min(pyH - pad, p.y));
+  if (pyDrag === 'R') {
+    const dax = pyVerts.A.x - pyVerts.R.x, day = pyVerts.A.y - pyVerts.R.y;
+    const dbx = pyVerts.B.x - pyVerts.R.x, dby = pyVerts.B.y - pyVerts.R.y;
+    pyVerts.R = p;
+    pyVerts.A = { x: Math.max(pad, Math.min(pyW - pad, p.x + dax)), y: Math.max(pad, Math.min(pyH - pad, p.y + day)) };
+    pyVerts.B = { x: Math.max(pad, Math.min(pyW - pad, p.x + dbx)), y: Math.max(pad, Math.min(pyH - pad, p.y + dby)) };
+  } else if (pyDrag === 'A') pyVerts.A = { x: p.x, y: pyVerts.R.y };
+  else pyVerts.B = { x: pyVerts.R.x, y: p.y };
+  pyDraw();
+}, { passive: false });
+pycv.addEventListener('touchend', () => { pyDrag = null; });
+function pyResize() { const sz = setupCanvas(pycv); pyW = sz.w; pyH = sz.h; pyInit(); pyDraw(); }
+
+// ─── UNIT CIRCLE ─────────────────────────────────────────────
+const uccv = document.getElementById('uc-cv');
+const ucctx = uccv.getContext('2d');
+const ucwv = document.getElementById('uc-wave');
+const ucwctx = ucwv.getContext('2d');
+let ucAngle = Math.PI / 4, ucDrag = false, ucW = 0, ucH = 0, ucCX = 0, ucCY = 0, ucCR = 0;
+
+function ucPtAngle(e) {
+  const r = uccv.getBoundingClientRect(), cl = e.touches ? e.touches[0] : e;
+  return Math.atan2(-((cl.clientY - r.top) * (ucH / r.height) - ucCY), (cl.clientX - r.left) * (ucW / r.width) - ucCX);
+}
+function ucFromSlider(v) { ucAngle = parseFloat(v) * Math.PI / 180; ucDraw(); }
+function ucDraw() {
+  const a = ucAngle, cos = Math.cos(a), sin = Math.sin(a);
+  ucctx.clearRect(0, 0, uccv.width, uccv.height); ucctx.save(); ucctx.scale(dpr, dpr);
+  ucctx.strokeStyle = 'rgba(255,255,255,0.04)'; ucctx.lineWidth = 0.5;
+  for (let i = -1; i <= 1; i += .5) {
+    const gx = ucCX + i * ucCR, gy = ucCY + i * ucCR;
+    ucctx.beginPath(); ucctx.moveTo(gx, 0); ucctx.lineTo(gx, ucH); ucctx.stroke();
+    ucctx.beginPath(); ucctx.moveTo(0, gy); ucctx.lineTo(ucW, gy); ucctx.stroke();
+  }
+  ucctx.strokeStyle = 'rgba(255,255,255,0.15)'; ucctx.lineWidth = 1;
+  ucctx.beginPath(); ucctx.moveTo(0, ucCY); ucctx.lineTo(ucW, ucCY); ucctx.stroke();
+  ucctx.beginPath(); ucctx.moveTo(ucCX, 0); ucctx.lineTo(ucCX, ucH); ucctx.stroke();
+  ucctx.strokeStyle = 'rgba(255,255,255,0.12)'; ucctx.lineWidth = 1.5;
+  ucctx.beginPath(); ucctx.arc(ucCX, ucCY, ucCR, 0, Math.PI * 2); ucctx.stroke();
+  const px = ucCX + cos * ucCR, py = ucCY - sin * ucCR;
+  const arcR = ucCR * .25;
+  ucctx.beginPath(); ucctx.arc(ucCX, ucCY, arcR, 0, -a, a < 0); ucctx.strokeStyle = '#a78bfa'; ucctx.lineWidth = 2; ucctx.stroke();
+  const amid = a / 2;
+  ucctx.fillStyle = '#a78bfa'; ucctx.font = 'bold 12px sans-serif';
+  ucctx.textAlign = 'center'; ucctx.textBaseline = 'middle';
+  ucctx.fillText('θ', ucCX + Math.cos(amid) * arcR * 1.5, ucCY - Math.sin(amid) * arcR * 1.5);
+  ucctx.beginPath(); ucctx.moveTo(ucCX, ucCY); ucctx.lineTo(px, ucCY); ucctx.strokeStyle = '#60a5fa'; ucctx.lineWidth = 2.5; ucctx.stroke();
+  ucctx.fillStyle = '#60a5fa'; ucctx.font = '11px sans-serif';
+  ucctx.textAlign = 'center'; ucctx.textBaseline = sin >= 0 ? 'top' : 'bottom';
+  ucctx.fillText('cos θ', (ucCX + px) / 2, ucCY + (sin >= 0 ? 5 : -5));
+  ucctx.beginPath(); ucctx.moveTo(px, ucCY); ucctx.lineTo(px, py); ucctx.strokeStyle = '#4ade80'; ucctx.lineWidth = 2.5; ucctx.stroke();
+  ucctx.fillStyle = '#4ade80'; ucctx.font = '11px sans-serif';
+  ucctx.textAlign = cos >= 0 ? 'left' : 'right'; ucctx.textBaseline = 'middle';
+  ucctx.fillText('sin θ', px + (cos >= 0 ? 7 : -7), (ucCY + py) / 2);
+  if (Math.abs(cos) > .04) {
+    const tan = sin / cos, x1 = ucCX + ucCR, tanY = ucCY - tan * ucCR;
+    const tanYc = Math.max(4, Math.min(ucH - 4, tanY));
+    const clipped = tanYc !== tanY;
+    ucctx.beginPath(); ucctx.moveTo(x1, ucCY); ucctx.lineTo(x1, tanYc);
+    ucctx.strokeStyle = '#fb7185'; ucctx.lineWidth = 3;
+    ucctx.setLineDash(clipped ? [4, 3] : []); ucctx.stroke(); ucctx.setLineDash([]);
+    if (!clipped) {
+      ucctx.beginPath(); ucctx.moveTo(px, py); ucctx.lineTo(x1, tanYc);
+      ucctx.strokeStyle = 'rgba(251,113,133,0.3)'; ucctx.lineWidth = 1;
+      ucctx.setLineDash([3, 3]); ucctx.stroke(); ucctx.setLineDash([]);
+    }
+    ucctx.strokeStyle = 'rgba(255,255,255,0.15)'; ucctx.lineWidth = 1;
+    ucctx.beginPath(); ucctx.moveTo(x1, ucCY - 4); ucctx.lineTo(x1, ucCY + 4); ucctx.stroke();
+    if (!clipped && Math.abs(tan) < 4) {
+      ucctx.fillStyle = '#fb7185'; ucctx.font = '11px sans-serif';
+      ucctx.textAlign = 'left'; ucctx.textBaseline = 'middle';
+      ucctx.fillText('tan θ', x1 + 7, (ucCY + tanYc) / 2);
+    }
+    if (!clipped) { drawDot(ucctx, x1, tanYc, '#fb7185', 5); }
+  }
+  ucctx.fillStyle = 'rgba(255,255,255,0.25)'; ucctx.font = '11px sans-serif'; ucctx.textAlign = 'center'; ucctx.textBaseline = 'middle';
+  ucctx.fillText('0°', ucCX + ucCR + 18, ucCY);
+  ucctx.fillText('90°', ucCX, ucCY - ucCR - 14);
+  ucctx.fillText('180°', ucCX - ucCR - 22, ucCY);
+  ucctx.fillText('270°', ucCX, ucCY + ucCR + 14);
+  ucctx.beginPath(); ucctx.moveTo(ucCX, ucCY); ucctx.lineTo(px, py);
+  ucctx.strokeStyle = 'rgba(255,255,255,0.3)'; ucctx.lineWidth = 1.5; ucctx.stroke();
+  drawDot(ucctx, px, py, '#a78bfa', 8);
+  ucctx.restore();
+  // wave
+  const wW = ucwv.width / dpr, wH = 90;
+  ucwctx.clearRect(0, 0, ucwv.width, ucwv.height); ucwctx.save(); ucwctx.scale(dpr, dpr);
+  const mid = wH / 2, amp = wH * .36;
+  ucwctx.strokeStyle = 'rgba(255,255,255,0.08)'; ucwctx.lineWidth = 0.5;
+  ucwctx.beginPath(); ucwctx.moveTo(0, mid); ucwctx.lineTo(wW, mid); ucwctx.stroke();
+  [['#60a5fa', 'cos'], ['#4ade80', 'sin']].forEach(([col, fn]) => {
+    ucwctx.beginPath();
+    for (let px2 = 0; px2 <= wW; px2++) {
+      const t = (px2 / wW) * Math.PI * 2;
+      const y = mid - (fn === 'sin' ? Math.sin(t) : Math.cos(t)) * amp;
+      px2 === 0 ? ucwctx.moveTo(px2, y) : ucwctx.lineTo(px2, y);
+    }
+    ucwctx.strokeStyle = col; ucwctx.lineWidth = 1.5; ucwctx.stroke();
+  });
+  const norm = ((a % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+  const xp = (norm / (Math.PI * 2)) * wW;
+  ucwctx.strokeStyle = 'rgba(167,139,250,0.4)'; ucwctx.lineWidth = 1; ucwctx.setLineDash([3, 3]);
+  ucwctx.beginPath(); ucwctx.moveTo(xp, 0); ucwctx.lineTo(xp, wH); ucwctx.stroke(); ucwctx.setLineDash([]);
+  [[cos, '#60a5fa'], [sin, '#4ade80']].forEach(([v, c]) => {
+    ucwctx.beginPath(); ucwctx.arc(xp, mid - v * amp, 4, 0, Math.PI * 2);
+    ucwctx.fillStyle = c; ucwctx.fill();
+  });
+  ucwctx.font = '10px sans-serif'; ucwctx.textAlign = 'left'; ucwctx.textBaseline = 'top';
+  ucwctx.fillStyle = '#60a5fa'; ucwctx.fillText('cos', 4, 3);
+  ucwctx.fillStyle = '#4ade80'; ucwctx.fillText('sin', 4, 15);
+  ucwctx.restore();
+  const deg2 = ((a * 180 / Math.PI) % 360 + 360) % 360;
+  document.getElementById('uc-ang').textContent = deg2.toFixed(1) + '°';
+  document.getElementById('uc-cos').textContent = cos.toFixed(3);
+  document.getElementById('uc-sin').textContent = sin.toFixed(3);
+  document.getElementById('uc-tan').textContent = Math.abs(cos) < .01 ? '∞' : (sin / cos).toFixed(3);
+  document.getElementById('uc-slider').value = deg2.toFixed(1);
+}
+uccv.addEventListener('mousedown', e => { ucDrag = true; ucAngle = ucPtAngle(e); ucDraw(); });
+uccv.addEventListener('mousemove', e => { if (ucDrag) { ucAngle = ucPtAngle(e); ucDraw(); } });
+uccv.addEventListener('mouseup', () => ucDrag = false);
+uccv.addEventListener('mouseleave', () => ucDrag = false);
+uccv.addEventListener('touchstart', e => { e.preventDefault(); ucDrag = true; ucAngle = ucPtAngle(e); ucDraw(); }, { passive: false });
+uccv.addEventListener('touchmove', e => { e.preventDefault(); if (ucDrag) { ucAngle = ucPtAngle(e); ucDraw(); } }, { passive: false });
+uccv.addEventListener('touchend', () => ucDrag = false);
+function ucResize() {
+  const w = uccv.parentElement.offsetWidth - 48, h = Math.round(w * .72);
+  ucW = w; ucH = h; ucCX = w / 2; ucCY = h / 2; ucCR = Math.min(w, h) * .33;
+  uccv.width = w * dpr; uccv.height = h * dpr; uccv.style.width = w + 'px'; uccv.style.height = h + 'px';
+  ucwv.width = w * dpr; ucwv.height = 90 * dpr; ucwv.style.width = w + 'px'; ucwv.style.height = '90px';
+  ucDraw();
+}
+
+// ─── SINE COSINE RULE (FIXED) ─────────────────────────────────
+const sccv = document.getElementById('sc-cv');
+const scctx = sccv.getContext('2d');
+let scW = 0, scH = 0, scDrag = null, scModeStr = 'sine';
+let scVerts = { A: { x: 0, y: 0 }, B: { x: 0, y: 0 }, C: { x: 0, y: 0 } };
+
+function scInit() {
+  const r = Math.min(scW, scH) * .31, cx = scW / 2, cy = scH / 2;
+  scVerts = { A: { x: cx, y: cy - r * .9 }, B: { x: cx - r * .95, y: cy + r * .6 }, C: { x: cx + r * .85, y: cy + r * .6 } };
+}
+
+function scMode(m) {
+  scModeStr = m;
+  document.getElementById('sc-sine').className = 'tog' + (m === 'sine' ? ' on-sine' : '');
+  document.getElementById('sc-cos').className = 'tog' + (m === 'cosine' ? ' on-cosine' : '');
+  document.getElementById('sc-formula').textContent = m === 'sine'
+    ? 'a / sin(A)  =  b / sin(B)  =  c / sin(C)'
+    : 'a² = b² + c² − 2bc · cos(A)';
+  scDraw();
+}
+
+// FIXED: proper interior angle arc
+function scDrawArcAngle(v, p1, p2, col, r, lbl) {
+  const a1 = Math.atan2(p1.y - v.y, p1.x - v.x);
+  const a2 = Math.atan2(p2.y - v.y, p2.x - v.x);
+  let diff = a2 - a1;
+  while (diff > Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  scctx.beginPath();
+  scctx.arc(v.x, v.y, r, a1, a1 + diff, diff < 0);
+  scctx.strokeStyle = col; scctx.lineWidth = 1.8; scctx.stroke();
+  const amid = a1 + diff / 2;
+  scctx.fillStyle = col; scctx.font = 'bold 11px \'DM Mono\',monospace';
+  scctx.textAlign = 'center'; scctx.textBaseline = 'middle';
+  scctx.fillText(lbl, v.x + Math.cos(amid) * (r + 14), v.y + Math.sin(amid) * (r + 14));
+}
+
+// FIXED: side label pushed away from centroid correctly
+function scSideLabelOffset(p1, p2, lbl, col) {
+  const mx = (p1.x + p2.x) / 2, my = (p1.y + p2.y) / 2;
+  const dx = p2.x - p1.x, dy = p2.y - p1.y, l = Math.hypot(dx, dy);
+  if (l < 1) return;
+  const nx = -dy / l, ny = dx / l;
+  const cx = (scVerts.A.x + scVerts.B.x + scVerts.C.x) / 3;
+  const cy = (scVerts.A.y + scVerts.B.y + scVerts.C.y) / 3;
+  const dot = (cx - mx) * nx + (cy - my) * ny;
+  const s = dot > 0 ? -1 : 1;
+  scctx.fillStyle = col; scctx.font = 'bold 13px sans-serif';
+  scctx.textAlign = 'center'; scctx.textBaseline = 'middle';
+  scctx.fillText(lbl, mx + nx * 18 * s, my + ny * 18 * s);
+}
+
+function scDraw() {
+  scctx.clearRect(0, 0, sccv.width, sccv.height);
+  scctx.save(); scctx.scale(dpr, dpr);
+  const { A, B, C } = scVerts;
+  const sc = 120;
+  const sA = dist(B, C), sB = dist(A, C), sC = dist(A, B);
+  const aA = angleBetween(A, B, C), aB = angleBetween(B, A, C), aC = angleBetween(C, A, B);
+  drawLine(scctx, B, C, '#60a5fa', 2.5);
+  drawLine(scctx, A, C, '#4ade80', 2.5);
+  drawLine(scctx, A, B, '#fb7185', 2.5);
+  const arcR = Math.min(Math.min(sA, sB, sC) * .22, 38);
+  scDrawArcAngle(A, B, C, '#60a5fa', arcR, 'A');
+  scDrawArcAngle(B, A, C, '#4ade80', arcR, 'B');
+  scDrawArcAngle(C, A, B, '#fb7185', arcR, 'C');
+  scSideLabelOffset(B, C, 'a', '#60a5fa');
+  scSideLabelOffset(A, C, 'b', '#4ade80');
+  scSideLabelOffset(A, B, 'c', '#fb7185');
+  // vertex name labels pushed outward from centroid
+  function vlabel(p, lbl, col) {
+    const cx2 = (A.x + B.x + C.x) / 3, cy2 = (A.y + B.y + C.y) / 3;
+    const dx = p.x - cx2, dy = p.y - cy2, l = Math.hypot(dx, dy) || 1;
+    drawLabel(scctx, lbl, p.x + dx / l * 14, p.y + dy / l * 14, col, 13);
+  }
+  vlabel(A, 'A', '#60a5fa'); vlabel(B, 'B', '#4ade80'); vlabel(C, 'C', '#fb7185');
+  drawDot(scctx, A.x, A.y, '#60a5fa');
+  drawDot(scctx, B.x, B.y, '#4ade80');
+  drawDot(scctx, C.x, C.y, '#fb7185');
+  if (scModeStr === 'sine') {
+    const k = sA / Math.sin(aA);
+    const txt = (!isFinite(k) || isNaN(k)) ? '—' : k.toFixed(2);
+    scctx.fillStyle = 'rgba(96,165,250,0.7)'; scctx.font = '12px monospace';
+    scctx.textAlign = 'center'; scctx.textBaseline = 'bottom';
+    scctx.fillText('a/sin A = b/sin B = c/sin C = ' + txt, scW / 2, scH - 8);
+  } else {
+    const lhs = (sA * sA / sc / sc).toFixed(2);
+    const rhs = ((sB * sB + sC * sC - 2 * sB * sC * Math.cos(aA)) / sc / sc).toFixed(2);
+    scctx.fillStyle = 'rgba(74,222,128,0.7)'; scctx.font = '12px monospace';
+    scctx.textAlign = 'center'; scctx.textBaseline = 'bottom';
+    scctx.fillText('a² = ' + lhs + '   b²+c²−2bc·cos(A) = ' + rhs, scW / 2, scH - 8);
+  }
+  document.getElementById('sc-A').textContent = deg(aA) + ' / ' + (sA / sc).toFixed(2);
+  document.getElementById('sc-B').textContent = deg(aB) + ' / ' + (sB / sc).toFixed(2);
+  document.getElementById('sc-C').textContent = deg(aC) + ' / ' + (sC / sc).toFixed(2);
+  if (scModeStr === 'sine') {
+    const k = sA / Math.sin(aA);
+    document.getElementById('sc-verify').textContent = 'Sine ratio k = ' + ((isNaN(k) || !isFinite(k)) ? '—' : k.toFixed(3));
+  } else {
+    const lhs = (sA * sA).toFixed(0);
+    const rhs = (sB * sB + sC * sC - 2 * sB * sC * Math.cos(aA)).toFixed(0);
+    document.getElementById('sc-verify').textContent = 'a² = ' + lhs + ' ≈ b²+c²−2bc·cos(A) = ' + rhs;
+  }
+  scctx.restore();
+}
+
+function scPt(e) {
+  const r = sccv.getBoundingClientRect(), cl = e.touches ? e.touches[0] : e;
+  return { x: (cl.clientX - r.left) * (scW / r.width), y: (cl.clientY - r.top) * (scH / r.height) };
+}
+function scHit(p) { for (const k of ['A', 'B', 'C']) if (dist(p, scVerts[k]) < 22) return k; return null; }
+sccv.addEventListener('mousedown', e => { e.preventDefault(); scDrag = scHit(scPt(e)); if (scDrag) sccv.style.cursor = 'grabbing'; });
+sccv.addEventListener('mousemove', e => {
+  e.preventDefault(); const p = scPt(e);
+  if (!scDrag) { sccv.style.cursor = scHit(p) ? 'grab' : 'default'; return; }
+  const pad = 20;
+  scVerts[scDrag] = { x: Math.max(pad, Math.min(scW - pad, p.x)), y: Math.max(pad, Math.min(scH - pad, p.y)) };
+  scDraw();
+});
+sccv.addEventListener('mouseup', () => { scDrag = null; sccv.style.cursor = 'default'; });
+sccv.addEventListener('mouseleave', () => { scDrag = null; });
+sccv.addEventListener('touchstart', e => { e.preventDefault(); scDrag = scHit(scPt(e)); }, { passive: false });
+sccv.addEventListener('touchmove', e => {
+  e.preventDefault(); if (!scDrag) return;
+  const p = scPt(e); const pad = 20;
+  scVerts[scDrag] = { x: Math.max(pad, Math.min(scW - pad, p.x)), y: Math.max(pad, Math.min(scH - pad, p.y)) };
+  scDraw();
+}, { passive: false });
+sccv.addEventListener('touchend', () => { scDrag = null; });
+function scResize() {
+  const sz = setupCanvas(sccv, Math.round((sccv.parentElement.offsetWidth - 48) * 0.6));
+  scW = sz.w; scH = sz.h; scInit(); scDraw();
+}
+
+// ─── CIRCLE THEOREMS (FIXED: tangent lengths) ─────────────────
+const ctcv = document.getElementById('ct-cv');
+const ctctx = ctcv.getContext('2d');
+let ctW = 0, ctH = 0, ctCX = 0, ctCY = 0, ctCR = 0, ctTheorem = 0, ctDrag = null;
+let ctPts = {};
+
+const ctThms = [
+  { title: 'The angle at the centre is twice the angle at the circumference', hint: 'Drag A, B or P' },
+  { title: 'Angles in the same segment are equal', hint: 'Drag P or Q — both angles stay equal' },
+  { title: 'The angle in a semicircle is always 90°', hint: 'Drag P around the semicircle' },
+  { title: 'Opposite angles in a cyclic quadrilateral sum to 180°', hint: 'Drag any vertex' },
+  { title: 'A tangent meets the radius at exactly 90°', hint: 'Drag P to move the tangent point' },
+  { title: 'Two tangents from an external point are equal in length', hint: 'Drag T (external point) to see equal tangent lengths' },
+];
+
+function ctInit() {
+  switch (ctTheorem) {
+    case 0: ctPts = { A: -2.0, B: 0.8, P: Math.PI * .85 }; break;
+    case 1: ctPts = { A: -2.2, B: 0.7, P1: Math.PI * .7, P2: Math.PI * 1.2 }; break;
+    case 2: ctPts = { P: Math.PI * .75 }; break;
+    case 3: ctPts = { A: -2.0, B: 0.6, C: Math.PI * .75, D: Math.PI * 1.3 }; break;
+    case 4: ctPts = { P: Math.PI * .35 }; break;
+    // FIXED: tangent lengths — T stored as angle+dist from center, fully draggable
+    case 5: ctPts = { Tangle: 0.0, Tdist: 1.75 }; break;
+  }
+}
+
+function ctSet(n) {
+  ctTheorem = n;
+  document.querySelectorAll('.thm-tab').forEach((t, i) => t.className = 'thm-tab' + (i === n ? ' on' : ''));
+  document.getElementById('ct-box').textContent = ctThms[n].title;
+  document.getElementById('ct-hint').textContent = ctThms[n].hint;
+  ctInit(); ctDraw();
+}
+
+function ctOC(a) { return ptOnCircle(ctCX, ctCY, ctCR, a); }
+
+function ctDrawArcAngle(v, p1, p2, col, r, lbl) {
+  const a1 = Math.atan2(p1.y - v.y, p1.x - v.x);
+  const a2 = Math.atan2(p2.y - v.y, p2.x - v.x);
+  let diff = a2 - a1;
+  while (diff > Math.PI) diff -= 2 * Math.PI;
+  while (diff < -Math.PI) diff += 2 * Math.PI;
+  ctctx.beginPath();
+  ctctx.arc(v.x, v.y, r, a1, a1 + diff, diff < 0);
+  ctctx.strokeStyle = col; ctctx.lineWidth = 1.5; ctctx.stroke();
+  const amid = a1 + diff / 2;
+  ctctx.fillStyle = col; ctctx.font = 'bold 11px sans-serif';
+  ctctx.textAlign = 'center'; ctctx.textBaseline = 'middle';
+  ctctx.fillText(lbl, v.x + Math.cos(amid) * (r + 12), v.y + Math.sin(amid) * (r + 12));
+}
+
+function ctOuterLabel(p, lbl, col) {
+  const dx = p.x - ctCX, dy = p.y - ctCY, l = Math.hypot(dx, dy) || 1;
+  drawLabel(ctctx, lbl, p.x + dx / l * 14, p.y + dy / l * 14, col);
+}
+
+function ctDraw() {
+  ctctx.clearRect(0, 0, ctcv.width, ctcv.height);
+  ctctx.save(); ctctx.scale(dpr, dpr);
+  ctctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctctx.lineWidth = 1.5;
+  ctctx.beginPath(); ctctx.arc(ctCX, ctCY, ctCR, 0, Math.PI * 2); ctctx.stroke();
+  const O = { x: ctCX, y: ctCY };
+
+  if (ctTheorem === 0) {
+    const A = ctOC(ctPts.A), B = ctOC(ctPts.B), P = ctOC(ctPts.P);
+    drawLine(ctctx, O, A, '#a78bfa', 2); drawLine(ctctx, O, B, '#a78bfa', 2);
+    drawLine(ctctx, P, A, '#60a5fa', 2); drawLine(ctctx, P, B, '#60a5fa', 2);
+    const arcR = Math.min(ctCR * .28, 36);
+    ctDrawArcAngle(O, A, B, '#a78bfa', arcR, '2θ');
+    ctDrawArcAngle(P, A, B, '#60a5fa', arcR * .8, 'θ');
+    drawDot(ctctx, A.x, A.y, '#fb7185'); drawDot(ctctx, B.x, B.y, '#4ade80');
+    drawDot(ctctx, P.x, P.y, '#60a5fa'); drawDot(ctctx, ctCX, ctCY, '#a78bfa', 5);
+    ctOuterLabel(A, 'A', '#fb7185'); ctOuterLabel(B, 'B', '#4ade80'); ctOuterLabel(P, 'P', '#60a5fa');
+    drawLabel(ctctx, 'O', ctCX - 12, ctCY - 10, '#a78bfa');
+    const aC = angleBetween(O, A, B), aP = angleBetween(P, A, B);
+    document.getElementById('ct-lbl0').textContent = 'Angle at centre ∠AOB';
+    document.getElementById('ct-lbl1').textContent = 'Angle at circumference ∠APB';
+    document.getElementById('ct-val0').textContent = deg(aC);
+    document.getElementById('ct-val1').textContent = deg(aP) + ' (half)';
+
+  } else if (ctTheorem === 1) {
+    const A = ctOC(ctPts.A), B = ctOC(ctPts.B), P1 = ctOC(ctPts.P1), P2 = ctOC(ctPts.P2);
+    drawLine(ctctx, A, B, 'rgba(255,255,255,0.15)', 1, [4, 3]);
+    drawLine(ctctx, P1, A, '#a78bfa', 2); drawLine(ctctx, P1, B, '#a78bfa', 2);
+    drawLine(ctctx, P2, A, '#fb7185', 2); drawLine(ctctx, P2, B, '#fb7185', 2);
+    const arcR = Math.min(ctCR * .22, 30);
+    ctDrawArcAngle(P1, A, B, '#a78bfa', arcR, 'θ');
+    ctDrawArcAngle(P2, A, B, '#fb7185', arcR, 'θ');
+    drawDot(ctctx, A.x, A.y, '#60a5fa'); drawDot(ctctx, B.x, B.y, '#4ade80');
+    drawDot(ctctx, P1.x, P1.y, '#a78bfa'); drawDot(ctctx, P2.x, P2.y, '#fb7185');
+    ctOuterLabel(A, 'A', '#60a5fa'); ctOuterLabel(B, 'B', '#4ade80');
+    ctOuterLabel(P1, 'P', '#a78bfa'); ctOuterLabel(P2, 'Q', '#fb7185');
+    const a1 = angleBetween(P1, A, B), a2 = angleBetween(P2, A, B);
+    document.getElementById('ct-lbl0').textContent = '∠APB';
+    document.getElementById('ct-lbl1').textContent = '∠AQB';
+    document.getElementById('ct-val0').textContent = deg(a1);
+    document.getElementById('ct-val1').textContent = deg(a2) + ' (equal)';
+
+  } else if (ctTheorem === 2) {
+    const A = ctOC(Math.PI), B = ctOC(0), P = ctOC(ctPts.P);
+    drawLine(ctctx, A, B, '#a78bfa', 2);
+    drawLine(ctctx, P, A, '#60a5fa', 2); drawLine(ctctx, P, B, '#4ade80', 2);
+    ctDrawArcAngle(P, A, B, '#fb7185', Math.min(ctCR * .22, 28), 'θ');
+    const uPA = { x: (A.x - P.x), y: (A.y - P.y) }, lPA = Math.hypot(uPA.x, uPA.y);
+    const uPB = { x: (B.x - P.x), y: (B.y - P.y) }, lPB = Math.hypot(uPB.x, uPB.y);
+    if (lPA > 1 && lPB > 1) {
+      const s = 12;
+      const na = { x: uPA.x / lPA * s, y: uPA.y / lPA * s };
+      const nb = { x: uPB.x / lPB * s, y: uPB.y / lPB * s };
+      ctctx.beginPath();
+      ctctx.moveTo(P.x + na.x, P.y + na.y);
+      ctctx.lineTo(P.x + na.x + nb.x, P.y + na.y + nb.y);
+      ctctx.lineTo(P.x + nb.x, P.y + nb.y);
+      ctctx.strokeStyle = '#fb7185'; ctctx.lineWidth = 1.5; ctctx.stroke();
+    }
+    drawDot(ctctx, A.x, A.y, '#a78bfa'); drawDot(ctctx, B.x, B.y, '#a78bfa');
+    drawDot(ctctx, P.x, P.y, '#60a5fa'); drawDot(ctctx, ctCX, ctCY, '#a78bfa', 4);
+    ctOuterLabel(A, 'A', '#a78bfa'); ctOuterLabel(B, 'B', '#a78bfa'); ctOuterLabel(P, 'P', '#60a5fa');
+    document.getElementById('ct-lbl0').textContent = '∠APB (in semicircle)';
+    document.getElementById('ct-lbl1').textContent = 'Diameter AB';
+    document.getElementById('ct-val0').textContent = deg(angleBetween(P, A, B)) + ' ≈ 90°';
+    document.getElementById('ct-val1').textContent = 'Always 90°';
+
+  } else if (ctTheorem === 3) {
+    const A = ctOC(ctPts.A), B = ctOC(ctPts.B), C = ctOC(ctPts.C), D = ctOC(ctPts.D);
+    ctctx.beginPath(); ctctx.moveTo(A.x, A.y); ctctx.lineTo(B.x, B.y);
+    ctctx.lineTo(C.x, C.y); ctctx.lineTo(D.x, D.y); ctctx.closePath();
+    ctctx.fillStyle = 'rgba(74,222,128,0.05)'; ctctx.fill();
+    ctctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctctx.lineWidth = 1; ctctx.stroke();
+    const aA = angleBetween(A, D, B), aB = angleBetween(B, A, C);
+    const aC2 = angleBetween(C, D, B), aD = angleBetween(D, A, C);
+    const ar = Math.min(ctCR * .18, 24);
+    ctDrawArcAngle(A, D, B, '#a78bfa', ar, 'A'); ctDrawArcAngle(C, D, B, '#60a5fa', ar, 'C');
+    ctDrawArcAngle(B, A, C, '#4ade80', ar, 'B'); ctDrawArcAngle(D, A, C, '#fb7185', ar, 'D');
+    drawDot(ctctx, A.x, A.y, '#a78bfa'); drawDot(ctctx, B.x, B.y, '#4ade80');
+    drawDot(ctctx, C.x, C.y, '#60a5fa'); drawDot(ctctx, D.x, D.y, '#fb7185');
+    ctOuterLabel(A, 'A', '#a78bfa'); ctOuterLabel(B, 'B', '#4ade80');
+    ctOuterLabel(C, 'C', '#60a5fa'); ctOuterLabel(D, 'D', '#fb7185');
+    document.getElementById('ct-lbl0').textContent = '∠A + ∠C';
+    document.getElementById('ct-lbl1').textContent = '∠B + ∠D';
+    document.getElementById('ct-val0').textContent = deg(aA + aC2);
+    document.getElementById('ct-val1').textContent = deg(aB + aD) + ' (both 180°)';
+
+  } else if (ctTheorem === 4) {
+    const P = ctOC(ctPts.P);
+    const rx = P.x - ctCX, ry = P.y - ctCY;
+    const tlen = ctCR * 1.1;
+    const T1 = { x: P.x - ry / ctCR * tlen, y: P.y + rx / ctCR * tlen };
+    const T2 = { x: P.x + ry / ctCR * tlen, y: P.y - rx / ctCR * tlen };
+    drawLine(ctctx, T1, T2, '#60a5fa', 2.5);
+    drawLine(ctctx, O, P, '#a78bfa', 2);
+    const ur = { x: rx / ctCR, y: ry / ctCR };
+    const ut = { x: -ry / ctCR, y: rx / ctCR };
+    const s = 13;
+    ctctx.beginPath();
+    ctctx.moveTo(P.x + ur.x * s, P.y + ur.y * s);
+    ctctx.lineTo(P.x + ur.x * s + ut.x * s, P.y + ur.y * s + ut.y * s);
+    ctctx.lineTo(P.x + ut.x * s, P.y + ut.y * s);
+    ctctx.strokeStyle = '#fb7185'; ctctx.lineWidth = 1.5; ctctx.stroke();
+    drawDot(ctctx, P.x, P.y, '#a78bfa'); drawDot(ctctx, ctCX, ctCY, '#a78bfa', 5);
+    ctOuterLabel(P, 'P', '#a78bfa');
+    drawLabel(ctctx, 'O', ctCX + 12, ctCY + 10, '#a78bfa');
+    ctctx.fillStyle = '#60a5fa'; ctctx.font = '11px sans-serif';
+    ctctx.textAlign = 'center'; ctctx.textBaseline = 'middle';
+    ctctx.fillText('tangent', (T1.x + T2.x) / 2, (T1.y + T2.y) / 2 - 14);
+    document.getElementById('ct-lbl0').textContent = 'Radius OP';
+    document.getElementById('ct-lbl1').textContent = 'Angle at P';
+    document.getElementById('ct-val0').textContent = '⊥ to tangent';
+    document.getElementById('ct-val1').textContent = 'Always 90°';
+
+  } else if (ctTheorem === 5) {
+    // FIXED: T is a real draggable external point stored by angle+distance from centre
+    const Tangle = ctPts.Tangle;
+    const Tdist = ctPts.Tdist;
+    const Tx = ctCX + Math.cos(Tangle) * Tdist * ctCR;
+    const Ty = ctCY + Math.sin(Tangle) * Tdist * ctCR;
+    const T = { x: Tx, y: Ty };
+    const d = Math.hypot(T.x - ctCX, T.y - ctCY);
+    if (d > ctCR + 1) {
+      const baseAngle = Math.atan2(T.y - ctCY, T.x - ctCX);
+      const alpha = Math.asin(Math.min(1, ctCR / d));
+      const P1 = ctOC(baseAngle + Math.PI - alpha);
+      const P2 = ctOC(baseAngle + Math.PI + alpha);
+      drawLine(ctctx, T, P1, '#60a5fa', 2.5);
+      drawLine(ctctx, T, P2, '#4ade80', 2.5);
+      drawLine(ctctx, O, P1, '#a78bfa', 1.2, [3, 3]);
+      drawLine(ctctx, O, P2, '#a78bfa', 1.2, [3, 3]);
+      // right angle squares at tangent points
+      function ctRightAngleSq(P, towardPt, col) {
+        const rx2 = P.x - ctCX, ry2 = P.y - ctCY, rlen = Math.hypot(rx2, ry2);
+        if (rlen < 1) return;
+        const ur2 = { x: rx2 / rlen, y: ry2 / rlen };
+        const ut2 = { x: -ry2 / rlen, y: rx2 / rlen };
+        const s2 = 10;
+        const toT = { x: towardPt.x - P.x, y: towardPt.y - P.y };
+        const dotT = toT.x * ut2.x + toT.y * ut2.y;
+        const sign = dotT > 0 ? 1 : -1;
+        ctctx.beginPath();
+        ctctx.moveTo(P.x + ur2.x * s2, P.y + ur2.y * s2);
+        ctctx.lineTo(P.x + ur2.x * s2 + ut2.x * s2 * sign, P.y + ur2.y * s2 + ut2.y * s2 * sign);
+        ctctx.lineTo(P.x + ut2.x * s2 * sign, P.y + ut2.y * s2 * sign);
+        ctctx.strokeStyle = col; ctctx.lineWidth = 1.2; ctctx.stroke();
+      }
+      ctRightAngleSq(P1, T, '#fb7185');
+      ctRightAngleSq(P2, T, '#fb7185');
+      drawDot(ctctx, P1.x, P1.y, '#60a5fa', 6);
+      drawDot(ctctx, P2.x, P2.y, '#4ade80', 6);
+      drawDot(ctctx, T.x, T.y, '#fbbf24', 8);
+      drawDot(ctctx, ctCX, ctCY, '#a78bfa', 4);
+      ctOuterLabel(P1, 'P', '#60a5fa');
+      ctOuterLabel(P2, 'Q', '#4ade80');
+      // T label: push away from center
+      const tdx = T.x - ctCX, tdy = T.y - ctCY, tl2 = Math.hypot(tdx, tdy) || 1;
+      drawLabel(ctctx, 'T', T.x + tdx / tl2 * 14, T.y + tdy / tl2 * 14, '#fbbf24');
+      drawLabel(ctctx, 'O', ctCX + 10, ctCY + 10, '#a78bfa');
+      // length labels on tangent lines
+      const l1 = dist(T, P1), l2v = dist(T, P2);
+      const m1x = (T.x + P1.x) / 2, m1y = (T.y + P1.y) / 2;
+      const m2x = (T.x + P2.x) / 2, m2y = (T.y + P2.y) / 2;
+      const perp1 = { x: -(P1.y - T.y) / l1, y: (P1.x - T.x) / l1 };
+      const perp2 = { x: -(P2.y - T.y) / l2v, y: (P2.x - T.x) / l2v };
+      ctctx.fillStyle = '#60a5fa'; ctctx.font = 'bold 11px \'DM Mono\',monospace';
+      ctctx.textAlign = 'center'; ctctx.textBaseline = 'middle';
+      ctctx.fillText((l1 / ctCR * 50).toFixed(1), m1x + perp1.x * 12, m1y + perp1.y * 12);
+      ctctx.fillStyle = '#4ade80';
+      ctctx.fillText((l2v / ctCR * 50).toFixed(1), m2x + perp2.x * 12, m2y + perp2.y * 12);
+      document.getElementById('ct-lbl0').textContent = 'Length TP';
+      document.getElementById('ct-lbl1').textContent = 'Length TQ';
+      document.getElementById('ct-val0').textContent = (l1 / ctCR * 50).toFixed(2) + ' units';
+      document.getElementById('ct-val1').textContent = (l2v / ctCR * 50).toFixed(2) + ' units (equal)';
+    }
+  }
+  ctctx.restore();
+}
+
+function ctPtInCv(e) {
+  const r = ctcv.getBoundingClientRect(), cl = e.touches ? e.touches[0] : e;
+  return { x: (cl.clientX - r.left) * (ctW / r.width), y: (cl.clientY - r.top) * (ctH / r.height) };
+}
+
+function ctGetTPos() {
+  return {
+    x: ctCX + Math.cos(ctPts.Tangle) * ctPts.Tdist * ctCR,
+    y: ctCY + Math.sin(ctPts.Tangle) * ctPts.Tdist * ctCR
+  };
+}
+
+function ctHit(p) {
+  if (ctTheorem === 5) {
+    const T = ctGetTPos();
+    if (Math.hypot(p.x - T.x, p.y - T.y) < 22) return 'T5';
+    return null;
+  }
+  const draggable = {
+    0: ['A', 'B', 'P'], 1: ['A', 'B', 'P1', 'P2'],
+    2: ['P'], 3: ['A', 'B', 'C', 'D'], 4: ['P']
+  };
+  for (const k of (draggable[ctTheorem] || [])) {
+    const pt = ctOC(ctPts[k]);
+    if (Math.hypot(p.x - pt.x, p.y - pt.y) < 22) return k;
+  }
+  return null;
+}
+
+ctcv.addEventListener('mousedown', e => { e.preventDefault(); ctDrag = ctHit(ctPtInCv(e)); if (ctDrag) ctcv.style.cursor = 'grabbing'; });
+ctcv.addEventListener('mousemove', e => {
+  e.preventDefault(); const p = ctPtInCv(e);
+  if (!ctDrag) { ctcv.style.cursor = ctHit(p) ? 'grab' : 'default'; return; }
+  if (ctTheorem === 5 && ctDrag === 'T5') {
+    const dx = p.x - ctCX, dy = p.y - ctCY;
+    ctPts.Tangle = Math.atan2(dy, dx);
+    ctPts.Tdist = Math.max(1.08, Math.hypot(dx, dy) / ctCR);
+  } else {
+    ctPts[ctDrag] = Math.atan2(p.y - ctCY, p.x - ctCX);
+  }
+  ctDraw();
+});
+ctcv.addEventListener('mouseup', () => { ctDrag = null; ctcv.style.cursor = 'default'; });
+ctcv.addEventListener('mouseleave', () => { ctDrag = null; });
+ctcv.addEventListener('touchstart', e => { e.preventDefault(); ctDrag = ctHit(ctPtInCv(e)); }, { passive: false });
+ctcv.addEventListener('touchmove', e => {
+  e.preventDefault(); if (!ctDrag) return;
+  const p = ctPtInCv(e);
+  if (ctTheorem === 5 && ctDrag === 'T5') {
+    const dx = p.x - ctCX, dy = p.y - ctCY;
+    ctPts.Tangle = Math.atan2(dy, dx);
+    ctPts.Tdist = Math.max(1.08, Math.hypot(dx, dy) / ctCR);
+  } else {
+    ctPts[ctDrag] = Math.atan2(p.y - ctCY, p.x - ctCX);
+  }
+  ctDraw();
+}, { passive: false });
+ctcv.addEventListener('touchend', () => { ctDrag = null; });
+
+function ctResize() {
+  const w = ctcv.parentElement.offsetWidth - 48, h = Math.round(w * .75);
+  ctW = w; ctH = h; ctCX = w / 2; ctCY = h / 2; ctCR = Math.min(w, h) * .32;
+  ctcv.width = w * dpr; ctcv.height = h * dpr;
+  ctcv.style.width = w + 'px'; ctcv.style.height = h + 'px';
+  ctInit(); ctDraw();
+}
+
+// ─── GLOBAL RESIZE ───────────────────────────────────────────
+let globalResizeT = null;
+function onResize() {
+  clearTimeout(globalResizeT);
+  globalResizeT = setTimeout(() => { qResize(); pyResize(); ucResize(); scResize(); ctResize(); }, 150);
+}
+window.addEventListener('resize', onResize);
+setTimeout(() => {
+  qResize(); pyResize(); ucResize(); scResize(); ctResize(); qUpdateInfo(1, 0, 0);
+}, 120);
+</script>
+</body>
+</html>
